@@ -57,6 +57,13 @@ func EditStudent(c *gin.Context) {
 		return
 	}
 
+	if err := models.ValidateData(&student); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	database.DB.Model(&student).UpdateColumns(student)
 
 	c.JSON(http.StatusOK, student)
@@ -84,6 +91,13 @@ func AddStudent(c *gin.Context) {
 	var student models.Student
 
 	if err := c.ShouldBindJSON(&student); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if err := models.ValidateData(&student); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
